@@ -22,8 +22,6 @@
     data = result
   })
 
-  
-
 </script>
 
 <main class="container">

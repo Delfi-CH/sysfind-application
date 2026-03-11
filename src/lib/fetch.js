@@ -1,5 +1,7 @@
 // @ts-nocheck
 import axios from 'axios';
+import { download } from "@tauri-apps/plugin-upload";
+import * as path from '@tauri-apps/api/path';
 
 export const backendURL = "http://localhost:3000"
 
@@ -26,12 +28,10 @@ export async function getOsByArchitecture(architecture) {
     return data
 }
 
-import { invoke } from "@tauri-apps/api/core";
-
 export async function downloadFile(url, filename) {
-    const res = await invoke("handle_download", { downloadUrl: url, filename: filename})
-    if (!res[0]) {
-        throw new Error("Download failed")
-    }
-    return res[1]
+    const downloadDir = await path.downloadDir()
+
+    await download(url, downloadDir + filename, (progress) => {
+        console.log(progress)
+    })
 }
