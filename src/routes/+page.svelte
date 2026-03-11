@@ -16,14 +16,10 @@
   }
 
   let data = $state([{}])
-  let data2 = $state()
 
   onMount(async ()=> {
     const result = await getAllOs()
     data = result
-    const res2 = await downloadFile("https://delfi.dev", "delfi.html")
-    console.log(res2)
-    data2 = res2
   })
 
   
@@ -38,7 +34,6 @@
     <button type="submit">Greet</button>
   </form>
   <p>{greetMsg}</p>
-  <p>{data2}</p>
 
   {#each data as os (os.id)}
     <OsViewer os={os}></OsViewer>
