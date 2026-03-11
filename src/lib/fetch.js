@@ -28,10 +28,11 @@ export async function getOsByArchitecture(architecture) {
     return data
 }
 
-export async function downloadFile(url, filename) {
+export async function downloadFile(url, filename, handleProgress) {
     const downloadDir = await path.downloadDir()
-
     await download(url, downloadDir + filename, (progress) => {
-        console.log(progress)
+        if (handleProgress) {
+            handleProgress(progress)
+        }
     })
 }

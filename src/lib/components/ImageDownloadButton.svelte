@@ -1,13 +1,14 @@
 <script>
 // @ts-nocheck
 
-    import { downloadFile } from "$lib/fetch";
     import { onMount } from "svelte";
+    import Downloader from "./Downloader.svelte";
 
     let {os} = $props()
 
     let filename = $state("image.iso")
-
+    let doDownload = $state(false)
+    
     onMount(()=>{
         console.log("mount")
         let osSnapshot = $state.snapshot(os)
@@ -17,19 +18,15 @@
         filename = tempFilename
     })
 
-    async function handleDownload(url, filename) {
-        try {
-            const path = await downloadFile(url, filename)
-            alert(path)
-        } catch (e) {
-            alert(e)
-        }
+    function handleClick() {
+        doDownload = true
     }
 
 </script>
 
 <main>
-    <button onclick={async ()=> handleDownload(os.imageDownloadURL, filename)} class="download">Download {os.name}</button>
+    <button class="download" onclick={handleClick}>Download {os.name}</button>
+    <Downloader url={os.imageDownloadURL} filename={filename} doDownload={doDownload}></Downloader>
 </main>
 
 <style>
