@@ -1,12 +1,12 @@
 use futures_util::StreamExt;
 use reqwest::Client;
 use serde::Serialize;
+use sha2::{Digest, Sha256};
+use std::sync::Arc;
 use std::{collections::HashMap, path::PathBuf};
 use tauri::ipc::Channel;
-use tokio::{fs::File, io::AsyncWriteExt, sync::Mutex};
-use std::sync::Arc;
 use tokio::sync::oneshot;
-use sha2::{Digest, Sha256};
+use tokio::{fs::File, io::AsyncWriteExt, sync::Mutex};
 
 #[derive(Clone)]
 pub struct DownloadManager {
@@ -110,9 +110,24 @@ impl DownloadManager {
 #[derive(Serialize, Clone)]
 #[serde(tag = "event", content = "data")]
 pub enum DownloadEvent {
-    Started { id: String, total: u64 },
-    Progress { id: String, downloaded: u64, total: u64 },
-    Finished { id: String },
-    Cancelled { id: String },
-    HashMismatch {id: String, expected: String, actual: String,},
+    Started {
+        id: String,
+        total: u64,
+    },
+    Progress {
+        id: String,
+        downloaded: u64,
+        total: u64,
+    },
+    Finished {
+        id: String,
+    },
+    Cancelled {
+        id: String,
+    },
+    HashMismatch {
+        id: String,
+        expected: String,
+        actual: String,
+    },
 }

@@ -1,8 +1,8 @@
 mod downloader;
 
-use downloader::{DownloadManager, DownloadEvent};
-use tauri::{State, ipc::Channel};
+use downloader::{DownloadEvent, DownloadManager};
 use std::path::PathBuf;
+use tauri::{ipc::Channel, State};
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -19,7 +19,6 @@ async fn start_download(
     hash: String,
     on_event: Channel<DownloadEvent>,
 ) -> Result<(), String> {
-
     manager
         .download(id, url, PathBuf::from(path), hash, on_event)
         .await
@@ -27,10 +26,7 @@ async fn start_download(
 }
 
 #[tauri::command]
-async fn cancel_download(
-    manager: State<'_, DownloadManager>,
-    id: String,
-) -> Result<(), String> {
+async fn cancel_download(manager: State<'_, DownloadManager>, id: String) -> Result<(), String> {
     manager.cancel(id).await;
     Ok(())
 }
@@ -44,10 +40,15 @@ pub fn run() {
     let manager = init();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .manage(manager)
-        .invoke_handler(tauri::generate_handler![greet, start_download, cancel_download])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            start_download,
+            cancel_download,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

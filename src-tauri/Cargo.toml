@@ -30,4 +30,5 @@ futures = "0.3.32"
 futures-util = "0.3.32"
 sha2 = "0.10.9"
 hex = "0.4.3"
+tauri-plugin-shell = "2"
 
