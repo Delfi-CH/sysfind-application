@@ -17,15 +17,20 @@
         total: 1
     })
 
+    let downloadProgressStatus = $state("Not downloading")
+
     let downloadPercentage = $derived(downloadProgressObject.downloaded / downloadProgressObject.total * 100);
+
+    let downloadPath = $state("")
     
-    onMount(()=>{
+    onMount(async ()=>{
         let osSnapshot = $state.snapshot(os)
         let tempFilename = osSnapshot.name.replace(/\s/g, "") + "_" + 
             osSnapshot.version.replace(/\s/g, "") + "_"+ 
             osSnapshot.architectures[0].name.replace(/\s/g, "") + ".iso"
         filename = tempFilename
         url = osSnapshot.imageDownloadURL
+        downloadPath = await path.join(await path.downloadDir(), filename)
     })
 
     const downloader = new DownloadManager()
@@ -35,18 +40,18 @@
             isActive = true
             return
         }
-        const downloadDir = await path.downloadDir()
         isActive = false
-        downloadId = downloader.start(url, downloadDir + filename, {
+        downloadProgressStatus = "Download in progress..."
+        downloadId = downloader.start(url, downloadPath, {
                 onProgress: (data) => {
                     downloadProgressObject = data
                 },
                 onFinished: () => {
-                    console.log("Done!");
+                    downloadProgressStatus = "Download finished"
                     isActive = true
                 },
                 onCancelled: () => {
-                    console.log("Cancelled");
+                    downloadProgressStatus = "Download canceled"
                     isActive = true
                 },
             }
@@ -60,26 +65,95 @@
         }  else {
             downloader.cancel(downloadId)
             isActive = true
+            setTimeout(()=> {
+                downloadProgressStatus = "Download canceled"
+            }, 100)
             return true
         }
     }
 </script>
 
 <main>
-    <button onclick={startDownload} disabled={!isActive}>Download {filename}</button>
-    <button onclick={cancelDownload} disabled={isActive}>Cancel Download</button>
-    <div class="barContainer"><span class="bar" style="width: {downloadPercentage}%"></span></div> <span>{downloadPercentage.toFixed(2)}%</span>
+    <div class="mainContainer">
+        <div class="buttonContainer">
+            <button onclick={startDownload} disabled={!isActive} class="buttonItem" style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;">Download {os.name} {os.version}</button>
+            <button onclick={cancelDownload} disabled={isActive} class="buttonItem" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;">Cancel Download</button>
+        </div>
+        <div class="barContainerContainer">
+            <div class="barContainer">
+                <span class="bar" style="width: {downloadPercentage.toFixed(2)}%"></span>
+            </div>
+            <span class="barProgress">{downloadPercentage.toFixed(2)}%</span>
+        </div>
+    </div>
+    <ul>
+        <li>Status: {downloadProgressStatus}</li>
+        
+        <li>Output: {downloadPath}</li>
+    </ul>
 </main>
 
 <style>
+
+    .mainContainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .buttonContainer {
+        display: flex;
+        flex-direction: row; 
+        border: 5px solid blue;
+        width: fit-content;
+        border-radius: 2rem;
+        background-color: blue;
+        
+    }
+
+    .buttonItem {
+        background: none;
+	    color: inherit;
+	    border: none;
+	    padding: 0.4rem;
+	    font: inherit;
+	    cursor: pointer;
+	    outline: inherit;
+        background-color: rgb(0, 132, 255, 0.5);
+        color: white;
+        
+    }
+
+    .buttonItem:hover {
+        background-color: rgba(0, 132, 255);
+    }
+
+    .buttonItem:disabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+    .barContainerContainer {
+        display: flex;
+        flex-direction: row;
+        margin-top: 0.5rem;
+        text-align: center;
+    }
     .barContainer {
         display: flex;
         width: 30%;
-        height: 1rem;
-        border: 3px solid blue;
+        height: 2rem;
+        border: 5px solid blue;
         background-color: #eee;
+        margin-right: 0.5rem;
+        border-radius: 2rem;
     }
     .bar {
         background-color: blue;
+        border-radius: 2rem;
+
+    }
+
+    .barProgress {
+        text-align: center;
+        font-size: 190%;
     }
 </style>
