@@ -2,7 +2,7 @@
 // @ts-nocheck
 
   import { invoke } from "@tauri-apps/api/core";
-  import {getAllOs, downloadFile} from "$lib/fetch.js"
+  import {getAllOs } from "$lib/fetch.js"
   import { onMount } from 'svelte';
   import OsViewer from "$lib/components/OsViewer.svelte";
 

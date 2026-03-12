@@ -1,35 +1,74 @@
 <script>
 // @ts-nocheck
 
-    import { downloadFile } from "$lib/fetch";
+    import { onMount } from "svelte";
+    import {DownloadManager} from "$lib/download"
+    import * as path from '@tauri-apps/api/path';
+    let {os} = $props()
 
-    let {url, filename, doDownload} = $props();
+    let filename = $state("image.iso")
+    let url = $state("https://delfi.dev/")
+    let downloadId = $state("-1")
+    let isActive = $state(true)
 
-    let downloadPercentage = $state(0)
-    let downloadSpeed = $state(0)
-    let downloadedMBytes = $state(0)
-    let totalDownloadedMbytes = $state(0)
+    let downloadProgressObject = $state({
+        id: "-1",
+        downloaded: 0,
+        total: 1
+    })
 
-    function handleDownload(url, filename) {
-        downloadFile(url, filename, (progress)=>{
-            downloadSpeed = (progress.transferSpeed / (1024 * 1024)).toFixed(2)
-            downloadedMBytes = (progress.progressTotal / (1024 * 1024)).toFixed(2)
-            totalDownloadedMbytes = (progress.total / (1024 * 1024)).toFixed(2)
-            downloadPercentage = (progress.progressTotal / progress.total * 100).toFixed(2)
-        })
+    let downloadPercentage = $derived(downloadProgressObject.downloaded / downloadProgressObject.total * 100);
+    
+    onMount(()=>{
+        let osSnapshot = $state.snapshot(os)
+        let tempFilename = osSnapshot.name.replace(/\s/g, "") + "_" + 
+            osSnapshot.version.replace(/\s/g, "") + "_"+ 
+            osSnapshot.architectures[0].name.replace(/\s/g, "") + ".iso"
+        filename = tempFilename
+        url = osSnapshot.imageDownloadURL
+    })
+
+    const downloader = new DownloadManager()
+
+    async function startDownload() {
+        if (downloadId !== "-1") {
+            isActive = true
+            return
+        }
+        const downloadDir = await path.downloadDir()
+        isActive = false
+        downloadId = downloader.start(url, downloadDir + filename, {
+                onProgress: (data) => {
+                    downloadProgressObject = data
+                },
+                onFinished: () => {
+                    console.log("Done!");
+                    isActive = true
+                },
+                onCancelled: () => {
+                    console.log("Cancelled");
+                    isActive = true
+                },
+            }
+        )
+        
     }
 
-    $effect(()=>{
-        console.log("dolod", doDownload)
-        if (doDownload) {
-            handleDownload(url, filename)
+    function cancelDownload() {
+        if (downloadId === "-1") {
+            return false
+        }  else {
+            downloader.cancel(downloadId)
+            isActive = true
+            return true
         }
-    })
+    }
 </script>
 
 <main>
-    <p class="barContainer"><span class="bar" style="width: {downloadPercentage}%"></span></p>
-    <p>Downloaded {downloadedMBytes} MBs of {totalDownloadedMbytes} MBs ({downloadPercentage}%) {downloadSpeed} MB/s</p>
+    <button onclick={startDownload} disabled={!isActive}>Download {filename}</button>
+    <button onclick={cancelDownload} disabled={isActive}>Cancel Download</button>
+    <div class="barContainer"><span class="bar" style="width: {downloadPercentage}%"></span></div> <span>{downloadPercentage.toFixed(2)}%</span>
 </main>
 
 <style>
@@ -37,15 +76,10 @@
         display: flex;
         width: 30%;
         height: 1rem;
-        border: 2px solid gray;
+        border: 3px solid blue;
         background-color: #eee;
-        border-radius: 4px;
-        overflow: hidden;
     }
-
     .bar {
-        height: 100%;
         background-color: blue;
-        transition: width 0.2s ease;
     }
 </style>

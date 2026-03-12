@@ -1,7 +1,7 @@
 <script>
 // @ts-nocheck
     import { onMount } from "svelte";
-    import ImageDownloadButton from "./ImageDownloadButton.svelte";
+    import Downloader from "./Downloader.svelte";
 
     let {os} = $props()
 </script>
@@ -16,7 +16,7 @@
         <li>Architectures: {os.architectures?.map(arch => arch.name ).join(", ")}</li>
     </ul>
     {#if os.imageDownloadURL} 
-        <ImageDownloadButton os={os}></ImageDownloadButton>
+        <Downloader os={os}></Downloader>
     {/if}
     <p>{os.description}</p>
 </main>
