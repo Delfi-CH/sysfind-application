@@ -4,6 +4,7 @@
     import { onMount } from "svelte";
     import {DownloadManager} from "$lib/download"
     import * as path from '@tauri-apps/api/path';
+    import { getSha256SumFromUrl } from "$lib/fetch";
     let {os} = $props()
 
     let filename = $state("image.iso")
@@ -36,13 +37,14 @@
     const downloader = new DownloadManager()
 
     async function startDownload() {
+        const usableHash = await getSha256SumFromUrl(os.hash, url);
         if (downloadId !== "-1") {
             isActive = true
             return
         }
         isActive = false
         downloadProgressStatus = "Download in progress..."
-        downloadId = downloader.start(url, downloadPath, os.hash, {
+        downloadId = downloader.start(url, downloadPath, usableHash, {
                 onProgress: (data) => {
                     downloadProgressObject = data
                 },
