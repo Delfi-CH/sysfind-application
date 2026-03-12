@@ -48,16 +48,20 @@
                 },
                 onFinished: () => {
                     downloadProgressStatus = "Download finished"
+                    downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
+                    downloadId = "-1"
                     isActive = true
                 },
                 onCancelled: () => {
                     downloadProgressStatus = "Download canceled"
                     downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
+                    downloadId = "-1"
                     isActive = true
                 },
                 onHashMismatch: (data) => {
                     downloadProgressStatus = "Failed to verify download! Expected " + data.expected + ", got " + data.actual
                     downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
+                    downloadId = "-1"
                     isActive = true
                 }
             }

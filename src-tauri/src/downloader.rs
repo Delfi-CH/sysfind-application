@@ -99,7 +99,7 @@ impl DownloadManager {
             })?;
             drop(file);
             let _ = tokio::fs::remove_file(&dest).await;
-            return Err("hash mismatch".into());
+            return Ok(());
         }
 
         progress.send(DownloadEvent::Finished { id })?;

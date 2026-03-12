@@ -35,7 +35,7 @@ export class DownloadManager {
       path: savePath,
       hash,
       onEvent: channel,
-    });
+    })
 
     return id;
   }
