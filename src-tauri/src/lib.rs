@@ -16,11 +16,12 @@ async fn start_download(
     id: String,
     url: String,
     path: String,
+    hash: String,
     on_event: Channel<DownloadEvent>,
 ) -> Result<(), String> {
 
     manager
-        .download(id, url, PathBuf::from(path), on_event)
+        .download(id, url, PathBuf::from(path), hash, on_event)
         .await
         .map_err(|e| e.to_string())
 }

@@ -42,7 +42,7 @@
         }
         isActive = false
         downloadProgressStatus = "Download in progress..."
-        downloadId = downloader.start(url, downloadPath, {
+        downloadId = downloader.start(url, downloadPath, os.hash, {
                 onProgress: (data) => {
                     downloadProgressObject = data
                 },
@@ -52,8 +52,14 @@
                 },
                 onCancelled: () => {
                     downloadProgressStatus = "Download canceled"
+                    downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
                     isActive = true
                 },
+                onHashMismatch: (data) => {
+                    downloadProgressStatus = "Failed to verify download! Expected " + data.expected + ", got " + data.actual
+                    downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
+                    isActive = true
+                }
             }
         )
         

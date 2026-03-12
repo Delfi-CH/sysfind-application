@@ -28,4 +28,6 @@ tokio = {version = "1.50.0", features = ["rt-multi-thread", "macros", "fs", "syn
 reqwest = { version = "0.13", features = ["stream"] }
 futures = "0.3.32"
 futures-util = "0.3.32"
+sha2 = "0.10.9"
+hex = "0.4.3"
 

@@ -6,6 +6,7 @@ use tauri::ipc::Channel;
 use tokio::{fs::File, io::AsyncWriteExt, sync::Mutex};
 use std::sync::Arc;
 use tokio::sync::oneshot;
+use sha2::{Digest, Sha256};
 
 #[derive(Clone)]
 pub struct DownloadManager {
@@ -30,19 +31,22 @@ impl DownloadManager {
         id: String,
         url: String,
         dest: PathBuf,
+        expected_hash: String,
         progress: Channel<DownloadEvent>,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let client = Client::new();
+        let mut hasher = Sha256::new();
         let res = client.get(&url).send().await?;
 
         let total = res.content_length().unwrap_or(0);
+        let mut cancelled = false;
 
         progress.send(DownloadEvent::Started {
             id: id.clone(),
             total,
         })?;
 
-        let mut file = File::create(dest).await?;
+        let mut file = File::create(&dest).await?;
         let mut stream = res.bytes_stream();
 
         let mut downloaded: u64 = 0;
@@ -54,6 +58,7 @@ impl DownloadManager {
             tokio::select! {
 
                 _ = &mut cancel_rx => {
+                    cancelled = true;
                     progress.send(DownloadEvent::Cancelled { id: id.clone() })?;
                     break;
                 }
@@ -65,6 +70,7 @@ impl DownloadManager {
                     };
 
                     file.write_all(&chunk).await?;
+                    hasher.update(&chunk);
                     downloaded += chunk.len() as u64;
 
                     progress.send(DownloadEvent::Progress {
@@ -74,6 +80,26 @@ impl DownloadManager {
                     })?;
                 }
             }
+        }
+
+        if cancelled {
+            drop(file);
+            let _ = tokio::fs::remove_file(&dest).await;
+            return Ok(());
+        }
+
+        let result = hasher.finalize();
+        let hash = hex::encode(result);
+
+        if hash != expected_hash {
+            progress.send(DownloadEvent::HashMismatch {
+                id: id.clone(),
+                expected: expected_hash,
+                actual: hash,
+            })?;
+            drop(file);
+            let _ = tokio::fs::remove_file(&dest).await;
+            return Err("hash mismatch".into());
         }
 
         progress.send(DownloadEvent::Finished { id })?;
@@ -88,4 +114,5 @@ pub enum DownloadEvent {
     Progress { id: String, downloaded: u64, total: u64 },
     Finished { id: String },
     Cancelled { id: String },
+    HashMismatch {id: String, expected: String, actual: String,},
 }

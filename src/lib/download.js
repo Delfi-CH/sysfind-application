@@ -6,7 +6,7 @@ export class DownloadManager {
     this.downloads = {};
   }
 
-  start(url, savePath, callbacks = {}) {
+  start(url, savePath, hash, callbacks = {}) {
     const id = crypto.randomUUID();
     const channel = new Channel();
 
@@ -21,6 +21,9 @@ export class DownloadManager {
         case "Cancelled":
           callbacks.onCancelled && callbacks.onCancelled(msg.data);
           break;
+        case "HashMismatch":
+          callbacks.onHashMismatch && callbacks.onHashMismatch(msg.data)
+          break;
       }
     };
 
@@ -30,6 +33,7 @@ export class DownloadManager {
       id,
       url,
       path: savePath,
+      hash,
       onEvent: channel,
     });
 
