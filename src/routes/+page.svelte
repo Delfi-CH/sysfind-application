@@ -21,7 +21,7 @@
   {#each data as os (os.id)}
     <OsViewer os={os}></OsViewer>
   {/each}
-  <TheButtonThatLaunchesHalfLife steamAppId=220 text="full life" style=true></TheButtonThatLaunchesHalfLife>
+  <!---<TheButtonThatLaunchesHalfLife steamAppId=220 text="full life" style=true></TheButtonThatLaunchesHalfLife>-->
 </main>
 
 <style>
