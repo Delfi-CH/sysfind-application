@@ -7,7 +7,6 @@
 <main>
     <div class="navbar">
         <h1 class="navbarItem">sysfind.app</h1>
-        <p class="navbarItem"><a href={resolve("/")}>Go home</a></p>
     </div>
 </main>
 

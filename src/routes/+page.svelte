@@ -3,10 +3,10 @@
 
   import {getAllOs } from "$lib/fetch.js"
   import { onMount } from 'svelte';
-  import OsViewer from "$lib/components/OsViewer.svelte";
   import TheButtonThatLaunchesHalfLife from "$lib/components/TheButtonThatLaunchesHalfLife.svelte";
   import {resolve} from "$app/paths";
-    import Navbar from "$lib/components/Navbar.svelte";
+  import Navbar from "$lib/components/Navbar.svelte";
+  import OsListItem from "$lib/components/OsListItem.svelte";
 
 
   let data = $state([{}])
@@ -21,11 +21,11 @@
 <main class="container">
   <Navbar></Navbar>
 
-  <ul>
+  <div>
     {#each data as os (os.id)}
-      <li>{os.name} {os.version} <a href={resolve("/view/"+os.id)}>View</a></li>
+      <OsListItem os={os}></OsListItem>
     {/each}
-  </ul>
+  </div>
   <!---<TheButtonThatLaunchesHalfLife steamAppId=220 text="full life" style=true></TheButtonThatLaunchesHalfLife>-->
 </main>
 
