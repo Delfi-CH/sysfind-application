@@ -19,6 +19,5 @@
         padding: 0.2rem;
         margin: 0.2rem;
         height: 100%;
-        text-align: center;
     }
 </style>

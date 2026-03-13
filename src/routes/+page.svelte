@@ -27,13 +27,13 @@
   function handleSearch(searchResult) {
     if (searchResult === "Launch Half Life") {
       displayData = []
-      halfLifeButton = {visible: true, appId: 70, text: searchResult}
+      halfLifeButton = {visible: true, appId: "70", text: searchResult}
       return
     } else if (searchResult === "Launch Half Life 2") {
-      halfLifeButton = {visible: true, appId: 220, text: searchResult}
+      halfLifeButton = {visible: true, appId: "220", text: searchResult}
       return
     } else if (searchResult === "Launch Black Mesa") {
-      halfLifeButton = {visible: true, appId: 362890, text: searchResult}
+      halfLifeButton = {visible: true, appId: "362890", text: searchResult}
       return
     }
     if (searchResult.length < 1) {

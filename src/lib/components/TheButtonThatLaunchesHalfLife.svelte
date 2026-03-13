@@ -11,7 +11,7 @@
         } else {
             launchUrl  = "steam://run/70"
         }
-        console.log(launchUrl)
+        console.log("Opening:" + launchUrl)
         openUrl(launchUrl)
     }
 
