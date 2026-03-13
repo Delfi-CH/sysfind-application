@@ -1,0 +1,29 @@
+<script>
+// @ts-nocheck
+
+    import Fuse from "fuse.js"
+    import { onMount } from 'svelte';
+
+    let {osNames, onSearch, onReset} = $props()
+
+    let searchParam = $state("")
+
+    const options = {includeScore: true, keys: ["name"]}
+    function handleSearch() {
+        event.preventDefault()
+        const fuse = new Fuse(osNames, options)
+        const result = fuse.search(searchParam)
+        onSearch(result.map((value)=> ({id: value.item.id,name: value.item.name, score: value.score})))
+    }
+    function handleReset() {
+        onReset()
+    }
+</script>
+
+<main>
+    <div>
+        <input type="text" bind:value={searchParam}>
+        <button onclick={handleSearch}>Search</button>
+        <button onclick={handleReset}>Reset</button>
+    </div>
+</main>

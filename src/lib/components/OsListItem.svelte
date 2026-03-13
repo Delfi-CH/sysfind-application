@@ -1,5 +1,5 @@
 <script>
-    let {os} = $props()
+    let {os, className} = $props()
     import Downloader from "./Downloader.svelte";
     import OsViewer from "./OsViewer.svelte";
     let showDetails = $state(false)
@@ -10,6 +10,7 @@
 </script>
 
 <main>
+    <div class={className}>
     <h1>{os.name} {os.version} <button onclick={handleDetailViewing}>Show more</button></h1>
     {#if showDetails}
        <OsViewer os={os}></OsViewer> 
@@ -19,6 +20,7 @@
     {:else}
         <p class="noDownload">No download available</p>
     {/if}
+    </div>
 </main>
 
 <style>
@@ -30,5 +32,8 @@
         border: 5px solid blue;
         border-radius: 2rem;
         cursor: not-allowed;
+    }
+    .invisible {
+        display: none;
     }
 </style>
