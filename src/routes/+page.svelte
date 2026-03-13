@@ -11,6 +11,11 @@
   let data = $state([{}])
   let displayData = $state([{}])
   let osNames = $state([])
+  let halfLifeButton = $state({
+    visible: false,
+    appId: 0,
+    text: "Full Life"
+  })
 
   onMount(async ()=> {
     const result = await getAllOs()
@@ -20,6 +25,17 @@
   })
 
   function handleSearch(searchResult) {
+    if (searchResult === "Launch Half Life") {
+      displayData = []
+      halfLifeButton = {visible: true, appId: 70, text: searchResult}
+      return
+    } else if (searchResult === "Launch Half Life 2") {
+      halfLifeButton = {visible: true, appId: 220, text: searchResult}
+      return
+    } else if (searchResult === "Launch Black Mesa") {
+      halfLifeButton = {visible: true, appId: 362890, text: searchResult}
+      return
+    }
     if (searchResult.length < 1) {
       displayData = []
       return;
@@ -34,6 +50,7 @@
 
   function resetSearch() {
     displayData = data
+    halfLifeButton = {visible: false, appId: 0,text: "Full Life"}
   }
 
   function isVisibleId(id) {
@@ -44,13 +61,16 @@
 
 <main class="container">
   <Navbar></Navbar>
-  <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> displayData = data)}></FuzzySearch>
+  <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
   <div>
     {#each data as os (os.id)}
       <OsListItem os={os} className={!isVisibleId(os.id) ? "invisible" : ""} />
     {:else}
       <p>Nothing was found...</p>
     {/each}
+    {#if halfLifeButton.visible}
+      <TheButtonThatLaunchesHalfLife steamAppId={halfLifeButton.appId} text={`${halfLifeButton.text} on Steam`} style=true></TheButtonThatLaunchesHalfLife>
+    {/if}
   </div>
   <!---<TheButtonThatLaunchesHalfLife steamAppId=220 text="full life" style=true></TheButtonThatLaunchesHalfLife>-->
 </main> 

@@ -9,8 +9,11 @@
     let searchParam = $state("")
 
     const options = {includeScore: true, keys: ["name"]}
+
     function handleSearch() {
-        event.preventDefault()
+        if (searchParam === "Launch Half Life" || searchParam === "Launch Half Life 2" || searchParam === "Launch Black Mesa") {
+            onSearch(searchParam)
+        }
         const fuse = new Fuse(osNames, options)
         const result = fuse.search(searchParam)
         onSearch(result.map((value)=> ({id: value.item.id,name: value.item.name, score: value.score})))
