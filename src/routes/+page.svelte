@@ -45,7 +45,7 @@
     let result = []
     
     searchResult.forEach(element => {
-      result = [...result, $state.snapshot(data).find((os)=> os.id === element  .id)]
+      result = [...result, $state.snapshot(data).find((os)=> os.id === element.id)]
     });
     displayData = result
   }
@@ -56,10 +56,13 @@
   }
 
   function isVisibleId(id) {
-    const visible = $state.snapshot(displayData.find((os) => os.id == id)) ? true : false
-    const suppoted = $state.snapshot(displayData.find((os) => os.id == id)).isSupported || showUnsupported
-    return visible && suppoted
-  }
+    const found = $state.snapshot(displayData).find((os) => os.id == id)
+
+    const visible = !!found
+    const supported = found?.isSupported || $state.snapshot(showUnsupported)
+
+    return visible && supported
+}
 
 </script>
 

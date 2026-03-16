@@ -19,6 +19,7 @@
         onSearch(result.map((value)=> ({id: value.item.id,name: value.item.name, score: value.score})))
     }
     function handleReset() {
+        searchParam = ""
         onReset()
     }
 </script>
