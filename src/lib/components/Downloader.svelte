@@ -28,11 +28,33 @@
         let osSnapshot = $state.snapshot(os)
         let tempFilename = osSnapshot.name.replace(/\s/g, "") + "_" + 
             osSnapshot.version.replace(/\s/g, "") + "_"+ 
-            osSnapshot.architectures[0].name.replace(/\s/g, "") + ".iso"
+            determinePossibleArchitecture(osSnapshot.architectures).replace(/\s/g, "") + ".iso"
         filename = tempFilename
         url = osSnapshot.imageDownloadURL
         downloadPath = await path.join(await path.downloadDir(), filename)
     })
+
+    function determinePossibleArchitecture(architecturesArray) {
+        const ids = architecturesArray.map(a => a.id);
+
+        const has = (fn) => ids.some(fn);
+
+        if (has(id => id >= 5 && id <= 8)) return "x86-64";
+        if (has(id => id >= 1 && id <= 8)) return "i386";
+        if (has(id => id >= 1 && id <= 9)) return "8086";
+        if (has(id => [12,16,17].includes(id))) return "arm64";
+        if (has(id => id >= 11 && id <= 17)) return "arm32";
+        if (has(id => id === 10)) return "IA-64";
+        if (has(id => id === 31)) return "IBM-Z-s390x";
+        if (has(id => id === 24)) return "PowerISA";
+        if (has(id => id === 23)) return "ppc64";
+        if (has(id => id >= 22 && id <= 23)) return "ppc32";
+        if (has(id => id === 21)) return "m68k";
+        if (has(id => id >= 25 && id <= 26)) return "SPARC";
+        if (has(id => id >= 27 && id <= 28)) return "DEC";
+
+        return "Unknown";
+    }
 
     const downloader = new DownloadManager()
 
