@@ -17,6 +17,8 @@
     text: "Full Life"
   })
 
+  let showUnsupported = $state(false)
+
   onMount(async ()=> {
     const result = await getAllOs()
     data = result
@@ -54,7 +56,9 @@
   }
 
   function isVisibleId(id) {
-    return $state.snapshot(displayData.find((os) => os.id == id)) ? true : false
+    const visible = $state.snapshot(displayData.find((os) => os.id == id)) ? true : false
+    const suppoted = $state.snapshot(displayData.find((os) => os.id == id)).isSupported || showUnsupported
+    return visible && suppoted
   }
 
 </script>
@@ -62,6 +66,7 @@
 <main class="container">
   <Navbar></Navbar>
   <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
+  <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported}></p>
   <div>
     {#each data as os (os.id)}
       <OsListItem os={os} className={!isVisibleId(os.id) ? "invisible" : ""} />
