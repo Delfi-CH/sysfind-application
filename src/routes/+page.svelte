@@ -21,6 +21,10 @@
   let showUnsupported = $state(false)
 
   onMount(async ()=> {
+    await triggerRefetch()
+  })
+
+  async function triggerRefetch() {
     let result = [];
     if (useLocalDataSource) {
       result = await getAllOsFromFiles()
@@ -30,7 +34,15 @@
     data = result
     displayData = data
     osNames = result.map((data)=>({id: data.id, name: data.name +" "+ data.version}))
-  })
+  }
+
+  async function handleSourceChange() {
+    if (confirm("Warning! This will cancel all ongoing downloads. Are you sure?") === true) {
+      await triggerRefetch()
+    } else {
+      useLocalDataSource = !useLocalDataSource
+    }
+  }
 
   function handleSearch(searchResult) {
     if (searchResult === "Launch Half Life") {
@@ -76,6 +88,7 @@
   <Navbar></Navbar>
   <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
   <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported}></p>
+  <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> handleSourceChange()}></p>
   <div>
     {#each data as os (os.id)}
       <OsListItem os={os} className={!isVisibleId(os.id) ? "invisible" : ""} />

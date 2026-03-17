@@ -1,7 +1,7 @@
 <script>
 // @ts-nocheck
 
-    import { onMount } from "svelte";
+    import { onMount, onDestroy } from "svelte";
     import {DownloadManager} from "$lib/download"
     import * as path from '@tauri-apps/api/path';
     import { getSha256SumFromUrl } from "$lib/fetch";
@@ -32,6 +32,10 @@
         filename = tempFilename
         url = osSnapshot.imageDownloadURL
         downloadPath = await path.join(await path.downloadDir(), filename)
+    })
+
+    onDestroy(()=>{
+      cancelDownload()  
     })
 
     function determinePossibleArchitecture(architecturesArray) {
