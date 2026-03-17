@@ -4,6 +4,7 @@ import { fetch } from '@tauri-apps/plugin-http';
 import { invoke } from '@tauri-apps/api/core';
 import { iniStringToObject } from '@delfi-ch/ini.js';
 import * as path from '@tauri-apps/api/path';
+import { mkdir } from '@tauri-apps/plugin-fs';
 
 export const backendURL = "http://localhost:3000"
 
@@ -55,7 +56,9 @@ export async function getSha256SumFromUrl(hashUrl, fileUrl) {
 
 export async function getAllOsFromFiles() {
     try {
-        const directoryPath = "../data";
+        const dataDir = await path.appDataDir()
+        const directoryPath = dataDir + "/stored_files/meta";
+        await mkdir(directoryPath, { recursive: true })
         const filesContents = await invoke('read_files', { dir: directoryPath });
         let res = []
         filesContents.forEach((file) => {

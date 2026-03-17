@@ -37,7 +37,7 @@
   }
 
   async function handleSourceChange() {
-    if (confirm("Warning! This will cancel all ongoing downloads. Are you sure?") === true) {
+    if (confirm("Warning! This will cancel all ongoing operations. Are you sure?") === true) {
       await triggerRefetch()
     } else {
       useLocalDataSource = !useLocalDataSource
@@ -91,7 +91,7 @@
   <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> handleSourceChange()}></p>
   <div>
     {#each data as os (os.id)}
-      <OsListItem os={os} className={!isVisibleId(os.id) ? "invisible" : ""} />
+      <OsListItem os={os} className={!isVisibleId(os.id) ? "invisible" : ""} useLocal={useLocalDataSource} />
     {:else}
       <p>Nothing was found...</p>
     {/each}

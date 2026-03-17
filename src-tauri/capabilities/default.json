@@ -24,6 +24,14 @@
       "allow": [{ "url": "https://fastly.mirror.pkgbuild.com" }]
     },
     "fs:default",
+    {
+      "identifier": "fs:allow-mkdir",
+      "allow": [
+        { "path": "$APPDATA/app.sysfind.DesktopClient/**" },
+        { "path": "$XDG_DATA_HOME/app.sysfind.DesktopClient/**" },
+        { "path": "$HOME/.local/share/app.sysfind.DesktopClient/**" }
+  ]
+    },
     "shell:default",
     "http:default"
   ]

@@ -1,8 +1,11 @@
 <script>
-    let {os, className} = $props()
+    import { onMount } from "svelte";
+    let {os, className, useLocal} = $props()
     import Downloader from "./Downloader.svelte";
     import OsViewer from "./OsViewer.svelte";
     let showDetails = $state(false)
+
+    onMount(()=> console.log($state.snapshot(os.architectures)))
 
     function handleDetailViewing() {
         showDetails = !showDetails
@@ -15,9 +18,9 @@
     {#if showDetails}
        <OsViewer os={os}></OsViewer> 
     {/if}
-    {#if os.imageDownloadURL} 
+    {#if os.imageDownloadURL && !useLocal} 
         <Downloader os={os}></Downloader>
-    {:else}
+    {:else if !useLocal}
         <p class="noDownload">No download available</p>
     {/if}
     </div>
