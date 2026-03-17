@@ -1,7 +1,7 @@
 <script>
 // @ts-nocheck
 
-  import {getAllOs } from "$lib/fetch.js"
+  import {getAllOs, getAllOsFromFiles } from "$lib/fetch.js"
   import { onMount } from 'svelte';
   import TheButtonThatLaunchesHalfLife from "$lib/components/TheButtonThatLaunchesHalfLife.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
@@ -9,6 +9,7 @@
   import FuzzySearch from "$lib/components/FuzzySearch.svelte";
 
   let data = $state([{}])
+  let useLocalDataSource = $state(false)
   let displayData = $state([{}])
   let osNames = $state([])
   let halfLifeButton = $state({
@@ -20,7 +21,12 @@
   let showUnsupported = $state(false)
 
   onMount(async ()=> {
-    const result = await getAllOs()
+    let result = [];
+    if (useLocalDataSource) {
+      result = await getAllOsFromFiles()
+    } else {
+      result = await getAllOs()
+    }
     data = result
     displayData = data
     osNames = result.map((data)=>({id: data.id, name: data.name +" "+ data.version}))

@@ -1,6 +1,9 @@
 // @ts-nocheck
 import axios from 'axios';
 import { fetch } from '@tauri-apps/plugin-http';
+import { invoke } from '@tauri-apps/api/core';
+import { iniStringToObject } from '@delfi-ch/ini.js';
+import * as path from '@tauri-apps/api/path';
 
 export const backendURL = "http://localhost:3000"
 
@@ -48,4 +51,24 @@ export async function getSha256SumFromUrl(hashUrl, fileUrl) {
     }
     
     return hashUrl
+}
+
+export async function getAllOsFromFiles() {
+    try {
+        const directoryPath = "../data";
+        const filesContents = await invoke('read_files', { dir: directoryPath });
+        let res = []
+        filesContents.forEach((file) => {
+            try {
+                let obj = iniStringToObject(file)
+                obj.architectures = obj.architectures.split(", ")
+                res = [...res, obj]
+            } catch (err) {
+                throw err
+            }
+        })
+        return res
+    } catch (err) {
+        console.error(err);
+    }
 }
