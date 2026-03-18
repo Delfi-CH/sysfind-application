@@ -51,7 +51,7 @@
     }
   }
 
-  function handleSearch(searchResult) {
+  function handleSearch(searchResult, family, arch) {
     if (searchResult === "Launch Half Life") {
       displayData = []
       halfLifeButton = {visible: true, appId: "70", text: searchResult}
@@ -68,11 +68,37 @@
       return;
     }
     let result = []
+
+    if (family !== "" && arch === "") {
+      result = searchResult.map(element => $state.snapshot(data).find(
+        (os) => os.id === element.id && os.family === family
+      )).filter(Boolean);
+    } else if (arch !== "" && family === "") {
+      result = searchResult.map(element => $state.snapshot(data).find(
+        (os) => os.id === element.id && cleanupArchArray(os.architectures).includes(arch)
+      )).filter(Boolean);
+    } else if (arch !== "" && family !== "" ) {
+      result = searchResult.map(element => $state.snapshot(data).find(
+        (os) => os.id === element.id && os.family === family && cleanupArchArray(os.architectures).includes(arch)
+      )).filter(Boolean);
+    } else {
+      result = searchResult.map(element => $state.snapshot(data).find(
+        (os) => os.id === element.id
+      )).filter(Boolean);
+    }
     
-    searchResult.forEach(element => {
-      result = [...result, $state.snapshot(data).find((os)=> os.id === element.id)]
-    });
+    
     displayData = result
+  }
+
+  function cleanupArchArray(archArray) {
+    if (typeof(archArray[0]) === "object") {
+      return archArray.map(arch => arch.name)
+    } else if (typeof(archArray[0]) === "string") {
+      return archArray
+    } else {
+      return []
+    }
   }
 
   function resetSearch() {
