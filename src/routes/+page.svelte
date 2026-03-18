@@ -63,7 +63,7 @@
       halfLifeButton = {visible: true, appId: "362890", text: searchResult}
       return
     }
-    if (searchResult.length < 1) {
+    if (searchResult.length < 1 && arch === "all" && family === "all" ) {
       displayData = []
       return;
     }
