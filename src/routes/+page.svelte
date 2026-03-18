@@ -1,7 +1,7 @@
 <script>
 // @ts-nocheck
 
-  import {getAllOs, getAllOsFromFiles } from "$lib/fetch.js"
+  import {checkForInternet, getAllOs, getAllOsFromFiles } from "$lib/fetch.js"
   import { onMount } from 'svelte';
   import TheButtonThatLaunchesHalfLife from "$lib/components/TheButtonThatLaunchesHalfLife.svelte";
   import Navbar from "$lib/components/Navbar.svelte";
@@ -12,6 +12,7 @@
 
   let data = $state([{}])
   let useLocalDataSource = $state(false)
+  let hasInteret = $state(false)
   let displayData = $state([{}])
   let osNames = $state([])
   let halfLifeButton = $state({
@@ -23,6 +24,9 @@
   let showUnsupported = $state(false)
 
   onMount(async ()=> {
+    const backendExists = await checkForInternet()
+    hasInteret = backendExists
+    useLocalDataSource = !hasInteret
     await triggerRefetch()
   })
 
@@ -91,7 +95,10 @@
   <Navbar></Navbar>
   <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
   <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported}></p>
-  <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()}></p>
+  <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret}></p>
+  {#if !hasInteret}
+    <p class="connectionFailed">Connection to Server failed!</p>
+  {/if}
   <div>
     {#each data as os (os.id)}
       <OsListItem os={os} className={!isVisibleId(os.id) ? "invisible" : ""} useLocal={useLocalDataSource} />
@@ -106,5 +113,8 @@
 </main> 
 
 <style>
-
+  .connectionFailed {
+    color: red;
+    font-weight: bolder;
+  }
 </style>

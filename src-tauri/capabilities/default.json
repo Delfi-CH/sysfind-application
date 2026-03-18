@@ -38,12 +38,32 @@
       "allow": [
         {
           "url": "https://fastly.mirror.pkgbuild.com"
+        },
+        {
+          "url": "http://localhost:3000"
+        },
+        {
+          "url": "https://www.google.com/generate_204"
         }
       ]
     },
     "fs:default",
     {
       "identifier": "fs:allow-mkdir",
+      "allow": [
+        {
+          "path": "$APPDATA/app.sysfind.DesktopClient/**"
+        },
+        {
+          "path": "$XDG_DATA_HOME/app.sysfind.DesktopClient/**"
+        },
+        {
+          "path": "$HOME/.local/share/app.sysfind.DesktopClient/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-exists",
       "allow": [
         {
           "path": "$APPDATA/app.sysfind.DesktopClient/**"

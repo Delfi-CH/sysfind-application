@@ -4,10 +4,11 @@
     import { onMount, onDestroy } from "svelte";
     import {DownloadManager} from "$lib/download"
     import * as path from '@tauri-apps/api/path';
-    import { mkdir } from '@tauri-apps/plugin-fs';
+    import { exists, mkdir } from '@tauri-apps/plugin-fs';
     import { openPath } from "@tauri-apps/plugin-opener";
     import { platform } from '@tauri-apps/plugin-os';
-    import { getSha256SumFromUrl } from "$lib/fetch";
+    import { confirm } from '@tauri-apps/plugin-dialog';
+    import { buildOsFilename, checkForLocalOsImage, getSha256SumFromUrl } from "$lib/fetch";
     let {os, useLocal} = $props()
 
     let filename = $state("image.iso")
@@ -25,48 +26,36 @@
 
     let downloadPercentage = $derived(downloadProgressObject.downloaded / downloadProgressObject.total * 100);
 
+    let showProgressbar = $state(true)
+
     let downloadPath = $state("")
 
     let hostOs = $state(platform())
     
     onMount(async ()=>{
         let osSnapshot = $state.snapshot(os)
-        let tempFilename = osSnapshot.name.replace(/\s/g, "") + "_" + 
-            osSnapshot.version.replace(/\s/g, "") + "_"+ 
-            determinePossibleArchitecture(osSnapshot.architectures).replace(/\s/g, "") + ".iso"
+        let tempFilename = buildOsFilename(osSnapshot)
         filename = tempFilename
         url = osSnapshot.imageDownloadURL
         const dataDir = await path.appDataDir()
         const directoryPath = dataDir + "/local_iso/images";
         await mkdir(directoryPath, { recursive: true })
         downloadPath = await path.join(directoryPath, filename)
+        
+        if (os.exists) {
+            downloadProgressObject = {
+                id: "-1",
+                downloaded: 1,
+                total: 1
+            }
+            downloadProgressStatus = "Exists on Disk"
+            showProgressbar = false
+        } 
     })
 
     onDestroy(()=>{
       cancelDownload()  
     })
-
-    function determinePossibleArchitecture(architecturesArray) {
-        const ids = architecturesArray.map(a => a.id);
-
-        const has = (fn) => ids.some(fn);
-
-        if (has(id => id >= 5 && id <= 8)) return "x86-64";
-        if (has(id => id >= 1 && id <= 8)) return "i386";
-        if (has(id => id >= 1 && id <= 9)) return "8086";
-        if (has(id => [12,16,17].includes(id))) return "arm64";
-        if (has(id => id >= 11 && id <= 17)) return "arm32";
-        if (has(id => id === 10)) return "IA-64";
-        if (has(id => id === 31)) return "IBM-Z-s390x";
-        if (has(id => id === 24)) return "PowerISA";
-        if (has(id => id === 23)) return "ppc64";
-        if (has(id => id >= 22 && id <= 23)) return "ppc32";
-        if (has(id => id === 21)) return "m68k";
-        if (has(id => id >= 25 && id <= 26)) return "SPARC";
-        if (has(id => id >= 27 && id <= 28)) return "DEC";
-
-        return "Unknown";
-    }
 
     const downloader = new DownloadManager()
 
@@ -76,7 +65,16 @@
             isActive = true
             return
         }
+        const fileExistsCurrently = await checkForLocalOsImage(filename)
+        if (os.exists && fileExistsCurrently) {
+            const confirmation = await confirm("This file is already downloaded. Are you sure that you want to redownload it?", { title: 'Tauri', kind: 'warning' })
+            if (!confirmation) {
+                isActive = true
+                return
+            }
+        }
         isActive = false
+        showProgressbar = true
         downloadProgressStatus = "Download in progress..."
         downloadId = downloader.start(url, downloadPath, usableHash, {
                 onProgress: (data) => {
@@ -134,17 +132,22 @@
                 <button onclick={startDownload} disabled={!isActive} class="buttonItem" style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;">Download {os.name} {os.version}</button>
                 <button onclick={cancelDownload} disabled={isActive} class="buttonItem" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;">Cancel Download</button>
             </div>
+            {#if showProgressbar}
             <div class="barContainerContainer">
                 <div class="barContainer">
                     <span class="bar" style="width: {downloadPercentage.toFixed(2)}%"></span>
                 </div>
                 <span class="barProgress">{downloadPercentage.toFixed(2)}%</span>
             </div>
+            {/if}
         </div>
         <p>Status: {downloadProgressStatus}</p>
         <button onclick={async ()=> await revealFile()}>Show in  {hostOs === "windows" ? "Explorer": "File Browser"}</button>
     {:else}
-        <button onclick={async ()=> await revealFile()}>Show in  {hostOs === "windows" ? "Explorer": "File Browser"}</button>
+        {#if os.exists === false}
+            <p class="imageNotFoundLocally">Image "{filename}" not found locally!</p>
+        {/if}
+        <button onclick={async ()=> await revealFile()}>Show in {hostOs === "windows" ? "Explorer": "File Browser"}</button>
     {/if}
 </main>
 
@@ -210,5 +213,10 @@
     .barProgress {
         text-align: center;
         font-size: 190%;
+    }
+
+    .imageNotFoundLocally {
+        color: red;
+        font-weight: bolder;
     }
 </style>
