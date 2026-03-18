@@ -8,7 +8,7 @@
     import { openPath } from "@tauri-apps/plugin-opener";
     import { platform } from '@tauri-apps/plugin-os';
     import { getSha256SumFromUrl } from "$lib/fetch";
-    let {os} = $props()
+    let {os, useLocal} = $props()
 
     let filename = $state("image.iso")
     let url = $state("https://delfi.dev/")
@@ -127,23 +127,25 @@
 </script>
 
 <main>
-    <div class="mainContainer">
-        <div class="buttonContainer">
-            <button onclick={startDownload} disabled={!isActive} class="buttonItem" style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;">Download {os.name} {os.version}</button>
-            <button onclick={cancelDownload} disabled={isActive} class="buttonItem" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;">Cancel Download</button>
-        </div>
-        <div class="barContainerContainer">
-            <div class="barContainer">
-                <span class="bar" style="width: {downloadPercentage.toFixed(2)}%"></span>
-            </div>
-            <span class="barProgress">{downloadPercentage.toFixed(2)}%</span>
-        </div>
-    </div>
-    <ul>
-        <li>Status: {downloadProgressStatus}</li>
+    {#if !useLocal}
+        <div class="mainContainer">
         
+            <div class="buttonContainer">
+                <button onclick={startDownload} disabled={!isActive} class="buttonItem" style="border-top-left-radius: 1rem; border-bottom-left-radius: 1rem;">Download {os.name} {os.version}</button>
+                <button onclick={cancelDownload} disabled={isActive} class="buttonItem" style="border-top-right-radius: 1rem; border-bottom-right-radius: 1rem;">Cancel Download</button>
+            </div>
+            <div class="barContainerContainer">
+                <div class="barContainer">
+                    <span class="bar" style="width: {downloadPercentage.toFixed(2)}%"></span>
+                </div>
+                <span class="barProgress">{downloadPercentage.toFixed(2)}%</span>
+            </div>
+        </div>
+        <p>Status: {downloadProgressStatus}</p>
         <button onclick={async ()=> await revealFile()}>Show in  {hostOs === "windows" ? "Explorer": "File Browser"}</button>
-    </ul>
+    {:else}
+        <button onclick={async ()=> await revealFile()}>Show in  {hostOs === "windows" ? "Explorer": "File Browser"}</button>
+    {/if}
 </main>
 
 <style>

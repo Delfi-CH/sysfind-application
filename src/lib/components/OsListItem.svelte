@@ -15,8 +15,8 @@
     {#if showDetails}
        <OsViewer os={os}></OsViewer> 
     {/if}
-    {#if os.imageDownloadURL && !useLocal} 
-        <Downloader os={os}></Downloader>
+    {#if os.imageDownloadURL} 
+        <Downloader os={os} useLocal={useLocal}></Downloader>
     {:else if !useLocal}
         <p class="noDownload">No download available</p>
     {/if}
