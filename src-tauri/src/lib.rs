@@ -1,11 +1,11 @@
 mod downloader;
 
 use downloader::{DownloadEvent, DownloadManager};
+use futures::future::try_join_all;
 use std::path::PathBuf;
+use tauri::{ipc::Channel, State};
 use tokio::fs;
 use tokio::io::AsyncReadExt;
-use futures::future::try_join_all;
-use tauri::{ipc::Channel, State};
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -45,7 +45,7 @@ async fn read_files(dir: String) -> Result<Vec<String>, String> {
     let mut dir_entries = fs::read_dir(&dir_path)
         .await
         .map_err(|e| format!("Failed to read directory: {}", e))?;
-    
+
     let mut paths = Vec::new();
     while let Some(entry) = dir_entries
         .next_entry()
@@ -79,6 +79,8 @@ pub fn run() {
     let manager = init();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())

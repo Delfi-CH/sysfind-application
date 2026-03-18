@@ -7,6 +7,8 @@
   import Navbar from "$lib/components/Navbar.svelte";
   import OsListItem from "$lib/components/OsListItem.svelte";
   import FuzzySearch from "$lib/components/FuzzySearch.svelte";
+  import { confirm } from '@tauri-apps/plugin-dialog';
+
 
   let data = $state([{}])
   let useLocalDataSource = $state(false)
@@ -37,7 +39,8 @@
   }
 
   async function handleSourceChange() {
-    if (confirm("Warning! This will cancel all ongoing operations. Are you sure?") === true) {
+    const confirmation = await confirm('Warning! This will cancel all ongoing operations. Are you sure?', { title: 'Tauri', kind: 'warning' })
+    if ( confirmation === true) {
       await triggerRefetch()
     } else {
       useLocalDataSource = !useLocalDataSource
@@ -88,7 +91,7 @@
   <Navbar></Navbar>
   <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
   <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported}></p>
-  <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> handleSourceChange()}></p>
+  <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()}></p>
   <div>
     {#each data as os (os.id)}
       <OsListItem os={os} className={!isVisibleId(os.id) ? "invisible" : ""} useLocal={useLocalDataSource} />

@@ -5,6 +5,8 @@
     import {DownloadManager} from "$lib/download"
     import * as path from '@tauri-apps/api/path';
     import { mkdir } from '@tauri-apps/plugin-fs';
+    import { openPath } from "@tauri-apps/plugin-opener";
+    import { platform } from '@tauri-apps/plugin-os';
     import { getSha256SumFromUrl } from "$lib/fetch";
     let {os} = $props()
 
@@ -24,6 +26,8 @@
     let downloadPercentage = $derived(downloadProgressObject.downloaded / downloadProgressObject.total * 100);
 
     let downloadPath = $state("")
+
+    let hostOs = $state(platform())
     
     onMount(async ()=>{
         let osSnapshot = $state.snapshot(os)
@@ -113,6 +117,13 @@
             return true
         }
     }
+
+    async function revealFile() {
+        const isoDir = await path.dirname(downloadPath)
+        await openPath(isoDir)
+        console.log(isoDir)
+        
+    }
 </script>
 
 <main>
@@ -131,7 +142,7 @@
     <ul>
         <li>Status: {downloadProgressStatus}</li>
         
-        <li>Output: {downloadPath}</li>
+        <button onclick={async ()=> await revealFile()}>Show in  {hostOs === "windows" ? "Explorer": "File Browser"}</button>
     </ul>
 </main>
 
