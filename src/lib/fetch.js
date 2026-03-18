@@ -111,7 +111,7 @@ export async function checkForLocalOsImage(filename) {
 export function buildOsFilename(os) {
     if (typeof(os.architectures[0]) === "string") {
         return os.name.replace(/\s/g, "") + "_" + 
-            os.version.replace(/\s/g, "") + "_"+ 
+            os.version.toString().replace(/\s/g, "") + "_"+ 
             determinePossibleArchitectureFromName(os.architectures).replace(/\s/g, "") + ".iso"
     } else {
         return os.name.replace(/\s/g, "") + "_" + 

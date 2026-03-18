@@ -92,7 +92,7 @@
                     downloadId = "-1"
                     isActive = true
                     console.log(metaPath)
-                    const obj = {...os , architectures: os.architectures.map(arch => arch.name).join(", ")}
+                    const obj = {...os , architectures: os.architectures.map(arch => arch.name).join(", "), exists: true}
                     await writeTextFile(metaPath, objectToIniString(obj))
                 },
                 onCancelled: () => {
