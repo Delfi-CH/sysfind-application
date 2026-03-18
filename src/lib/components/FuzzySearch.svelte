@@ -8,12 +8,16 @@
 
     let searchParam = $state("")
     
-    let selectedFamily = $state("")
-    let selectedArch = $state("")
+    let selectedFamily = $state("all")
+    let selectedArch = $state("all")
 
     const options = {includeScore: true, keys: ["name"]}
 
     function handleSearch() {
+        if (searchParam.length <= 0) {
+            return
+        }
+
         if (searchParam === "Launch Half Life" || searchParam === "Launch Half Life 2" || searchParam === "Launch Black Mesa") {
             onSearch(searchParam, "Half Life", "Half Life")
         }
@@ -37,14 +41,14 @@
         <button onclick={handleReset}>Reset</button>
         <label for="family">Operating System Family</label>
         <select name="family" id="family" bind:value={selectedFamily}>
-            <option value="">ALl</option>
+            <option value="all">All</option>
             {#each Object.entries(operatingSystemFamilies) as family}
                 <option value={family[1]}>{family[1]}</option>
             {/each}
         </select>
         <label for="arch">Processor Architecture</label>
         <select name="arch" id="arch" bind:value={selectedArch}>
-            <option value="">All</option>
+            <option value="all">All</option>
             {#each Object.entries(processorArchitecture) as arch}
                 <option value={arch[1]}>{arch[1]}</option>
             {/each}
