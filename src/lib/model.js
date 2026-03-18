@@ -20,7 +20,7 @@ export const processorArchitecture = Object.freeze({
     x86_64_v2: 'x86-64-v2',
     x86_64_v3: 'x86-64-v3',
     x86_64_v4: 'x86-64-v4',
-    8086: '8086',
+    "8086": '8086',
     IA64: 'IA64',
     ARM32: 'Aarch32',
     ARM64: 'Aarch64',

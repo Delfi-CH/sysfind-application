@@ -88,6 +88,12 @@
       )).filter(Boolean);
     }
     
+    const includeUnsupported = $state.snapshot(showUnsupported)
+
+    result = result.filter(os => 
+      includeUnsupported || os.isSupported
+    )
+
     displayData = result
   }
 
