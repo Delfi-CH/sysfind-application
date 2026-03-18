@@ -14,7 +14,7 @@
     const options = {includeScore: true, keys: ["name"]}
 
     function handleSearch() {
-        if (searchParam.length <= 0) {
+        if (searchParam.length <= 0 && selectedArch === "all" && selectedFamily === "all") {
             return
         }
 
