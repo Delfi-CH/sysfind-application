@@ -4,6 +4,7 @@
     import { onMount, onDestroy } from "svelte";
     import {DownloadManager} from "$lib/download"
     import * as path from '@tauri-apps/api/path';
+    import { mkdir } from '@tauri-apps/plugin-fs';
     import { getSha256SumFromUrl } from "$lib/fetch";
     let {os} = $props()
 
@@ -31,7 +32,10 @@
             determinePossibleArchitecture(osSnapshot.architectures).replace(/\s/g, "") + ".iso"
         filename = tempFilename
         url = osSnapshot.imageDownloadURL
-        downloadPath = await path.join(await path.downloadDir(), filename)
+        const dataDir = await path.appDataDir()
+        const directoryPath = dataDir + "/local_iso/images";
+        await mkdir(directoryPath, { recursive: true })
+        downloadPath = await path.join(directoryPath, filename)
     })
 
     onDestroy(()=>{

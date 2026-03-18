@@ -57,7 +57,7 @@ export async function getSha256SumFromUrl(hashUrl, fileUrl) {
 export async function getAllOsFromFiles() {
     try {
         const dataDir = await path.appDataDir()
-        const directoryPath = dataDir + "/stored_files/meta";
+        const directoryPath = dataDir + "/local_iso/meta";
         await mkdir(directoryPath, { recursive: true })
         const filesContents = await invoke('read_files', { dir: directoryPath });
         let res = []

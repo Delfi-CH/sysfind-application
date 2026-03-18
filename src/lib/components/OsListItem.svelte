@@ -1,11 +1,8 @@
 <script>
-    import { onMount } from "svelte";
     let {os, className, useLocal} = $props()
     import Downloader from "./Downloader.svelte";
     import OsViewer from "./OsViewer.svelte";
     let showDetails = $state(false)
-
-    onMount(()=> console.log($state.snapshot(os.architectures)))
 
     function handleDetailViewing() {
         showDetails = !showDetails
