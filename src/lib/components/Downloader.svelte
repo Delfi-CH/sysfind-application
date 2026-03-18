@@ -4,11 +4,13 @@
     import { onMount, onDestroy } from "svelte";
     import {DownloadManager} from "$lib/download"
     import * as path from '@tauri-apps/api/path';
-    import { exists, mkdir } from '@tauri-apps/plugin-fs';
+    import { exists, mkdir, writeTextFile } from '@tauri-apps/plugin-fs';
     import { openPath } from "@tauri-apps/plugin-opener";
     import { platform } from '@tauri-apps/plugin-os';
     import { confirm } from '@tauri-apps/plugin-dialog';
     import { buildOsFilename, checkForLocalOsImage, getSha256SumFromUrl } from "$lib/fetch";
+    import { objectToIniString } from "@delfi-ch/ini.js";
+
     let {os, useLocal} = $props()
 
     let filename = $state("image.iso")
@@ -29,6 +31,7 @@
     let showProgressbar = $state(true)
 
     let downloadPath = $state("")
+    let metaPath = $state("")
 
     let hostOs = $state(platform())
     
@@ -39,8 +42,11 @@
         url = osSnapshot.imageDownloadURL
         const dataDir = await path.appDataDir()
         const directoryPath = dataDir + "/local_iso/images";
+        const metaDirPath = dataDir + "/local_iso/meta"
         await mkdir(directoryPath, { recursive: true })
         downloadPath = await path.join(directoryPath, filename)
+        await mkdir(metaDirPath, { recursive: true })
+        metaPath = await path.join(metaDirPath, (osSnapshot.name + osSnapshot.version + ".ini"))
         
         if (os.exists) {
             downloadProgressObject = {
@@ -80,11 +86,14 @@
                 onProgress: (data) => {
                     downloadProgressObject = data
                 },
-                onFinished: () => {
+                onFinished: async () => {
                     downloadProgressStatus = "Download finished"
                     downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
                     downloadId = "-1"
                     isActive = true
+                    console.log(metaPath)
+                    const obj = {...os , architectures: os.architectures.map(arch => arch.name).join(", ")}
+                    await writeTextFile(metaPath, objectToIniString(obj))
                 },
                 onCancelled: () => {
                     downloadProgressStatus = "Download canceled"

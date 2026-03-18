@@ -63,6 +63,34 @@
       ]
     },
     {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [
+        {
+          "path": "$APPDATA/app.sysfind.DesktopClient/**"
+        },
+        {
+          "path": "$XDG_DATA_HOME/app.sysfind.DesktopClient/**"
+        },
+        {
+          "path": "$HOME/.local/share/app.sysfind.DesktopClient/**"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-write",
+      "allow": [
+        {
+          "path": "$APPDATA/app.sysfind.DesktopClient/**"
+        },
+        {
+          "path": "$XDG_DATA_HOME/app.sysfind.DesktopClient/**"
+        },
+        {
+          "path": "$HOME/.local/share/app.sysfind.DesktopClient/**"
+        }
+      ]
+    },
+    {
       "identifier": "fs:allow-exists",
       "allow": [
         {
