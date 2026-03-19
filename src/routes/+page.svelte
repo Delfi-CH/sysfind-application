@@ -4,7 +4,6 @@
   import {checkForInternet, getAllOs, getAllOsFromFiles } from "$lib/fetch.js"
   import { onMount } from 'svelte';
   import TheButtonThatLaunchesHalfLife from "$lib/components/TheButtonThatLaunchesHalfLife.svelte";
-  import Navbar from "$lib/components/Navbar.svelte";
   import OsListItem from "$lib/components/OsListItem.svelte";
   import FuzzySearch from "$lib/components/FuzzySearch.svelte";
   import { confirm } from '@tauri-apps/plugin-dialog';
@@ -124,7 +123,8 @@
 </script>
 
 <main class="container">
-  <h1>sysfind.app</h1>
+  
+  <h1><img src="icon.svg" alt="Lens over Tux" width="64px">sysfind.app</h1>
   <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
   <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported}></p>
   <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret}></p>
