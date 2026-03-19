@@ -18,21 +18,12 @@
     {#if os.imageDownloadURL} 
         <Downloader os={os} useLocal={useLocal}></Downloader>
     {:else if !useLocal}
-        <p class="noDownload">No download available</p>
+        <p>No download available</p>
     {/if}
     </div>
 </main>
 
 <style>
-    .noDownload {
-        background-color: #0042FF;
-        padding: 0.4rem;
-        color: white;
-        width: fit-content;
-        border: 5px solid blue;
-        border-radius: 2rem;
-        cursor: not-allowed;
-    }
     .invisible {
         display: none;
     }
