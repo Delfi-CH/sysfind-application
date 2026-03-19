@@ -6,7 +6,7 @@ import { iniStringToObject } from '@delfi-ch/ini.js';
 import * as path from '@tauri-apps/api/path';
 import { mkdir, exists } from '@tauri-apps/plugin-fs';
 
-export const backendURL = "http://localhost:3000"
+export const backendURL = "http://localhost:3000/api/sysfind"
 
 export async function getAllOs() {
     const res = await axios.get(backendURL+"/operatingSystem")
