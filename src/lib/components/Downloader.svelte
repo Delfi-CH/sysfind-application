@@ -23,10 +23,17 @@
         downloaded: 0,
         total: 1
     })
+    let oldDownloadProgressObject = $state({
+        id: "-1",
+        downloaded: 0,
+        total: 1
+    })
 
     let downloadProgressStatus = $state("Not downloading")
 
     let downloadPercentage = $derived(downloadProgressObject.downloaded / downloadProgressObject.total * 100);
+
+    let downloadSpeed = $derived(((downloadProgressObject.downloaded - oldDownloadProgressObject.downloaded) * 8) / 1000000)
 
     let showProgressbar = $state(true)
 
@@ -84,7 +91,9 @@
         downloadProgressStatus = "Download in progress..."
         downloadId = downloader.start(url, downloadPath, usableHash, {
                 onProgress: (data) => {
+                    oldDownloadProgressObject = $state.snapshot(downloadProgressObject)
                     downloadProgressObject = data
+                    downloadSpeed
                 },
                 onFinished: async () => {
                     downloadProgressStatus = "Download finished"
@@ -98,6 +107,7 @@
                 onCancelled: () => {
                     downloadProgressStatus = "Download canceled"
                     downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
+                    oldDownloadProgressObject = {id: "-1", downloaded: 0, total: 1}
                     downloadId = "-1"
                     isActive = true
                 },
@@ -146,7 +156,7 @@
                 <div class="barContainer">
                     <span class="bar" style="width: {downloadPercentage.toFixed(2)}%"></span>
                 </div>
-                <span class="barProgress">{downloadPercentage.toFixed(2)}%</span>
+                <span class="barProgress"> {downloadSpeed.toFixed(2)} Mbp/s {downloadPercentage.toFixed(2)}% {(downloadProgressObject.downloaded / 1000000).toFixed(2)} MB / {(downloadProgressObject.total / 1000000).toFixed(2)} MB</span>
             </div>
             {/if}
         </div>
@@ -221,7 +231,7 @@
 
     .barProgress {
         text-align: center;
-        font-size: 190%;
+        font-size: 130%;
     }
 
     .imageNotFoundLocally {
