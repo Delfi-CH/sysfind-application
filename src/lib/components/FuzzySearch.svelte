@@ -35,12 +35,12 @@
 </script>
 
 <main>
-    <div class="searchContainer">
+    <div class="fuzzySearchContainer">
         
         <input type="text" id="searchParam" bind:value={searchParam} placeholder="Type Operating System name"> 
-        <div class="buttonContainer">
-            <button onclick={handleSearch} class="buttonItem">Search</button>
-            <button onclick={handleReset} class="buttonItem">Reset</button>
+        <div class="fuzzyButtonContainer">
+            <button onclick={handleSearch} class="fuzzyButtonItem">Search</button>
+            <button onclick={handleReset} class="fuzzyButtonItem">Reset</button>
         </div>
         <label for="family">Operating System Family</label>
         <select name="family" id="family" bind:value={selectedFamily}>
@@ -60,16 +60,16 @@
 </main>
 
 <style>
-    .searchContainer {
+    .fuzzySearchContainer {
         display: flex;
         flex-direction: column;
     }
 
-    .buttonContainer {
+    .fuzzyButtonContainer {
         display: flex;
         flex-direction: row;
     }
-    .buttonItem {
+    .fuzzyButtonItem {
         width: 50%;
     }
 </style>

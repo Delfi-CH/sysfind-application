@@ -15,16 +15,31 @@
 </script>
 
 <main>
-    <ul>
-        <li>Version: {os.version}</li>
-        <li>Family: {os.family}</li>
-        <li>Webpage: <a href={os.homepage} target="_blank">{os.homepage}</a></li>
-        <li>Supported: {os.isSupported ? "Yes" : "No"}</li>
-        <li>Architectures: {mapArchitectures(os.architectures)}</li>
+    <ul class="osVierwerList">
+        <li class="osVierwerListItem osVierwerBackgroundBlue">Version: {os.version}</li>
+        <li class="osVierwerListItem osVierwerBackgroundWhite">Family: {os.family}</li>
+        <li class="osVierwerListItem osVierwerBackgroundBlue">Webpage: <a href={os.homepage} target="_blank">{os.homepage}</a></li>
+        <li class="osVierwerListItem osVierwerBackgroundWhite">Supported: {os.isSupported ? "Yes" : "No"}</li>
+        <li class="osVierwerListItem osVierwerBackgroundBlue">Architectures: {mapArchitectures(os.architectures)}</li>
     </ul>
     <p>{os.description}</p>
 </main>
 
 <style>
-
+    .osVierwerList {
+        padding: 0;
+        margin: 0;
+        border: 3px solid black;
+        width: fit-content;
+    }
+    .osVierwerListItem {
+        list-style: none;
+        padding: 0.3rem;
+    }
+    .osVierwerBackgroundBlue {
+        background-color: #E4EEFF;
+    }
+    .osVierwerBackgroundWhite {
+        background-color: #FFFFFF;
+    }
 </style>
