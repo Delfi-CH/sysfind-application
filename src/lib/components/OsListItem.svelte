@@ -36,6 +36,8 @@
         border: 5px solid black;
         padding: 0.5rem;
         min-height: 20rem;
+        background-color: #E4EEFF;
+        border-radius: 1.5rem;
     }
     .detailButton {
         height: fit-content;
