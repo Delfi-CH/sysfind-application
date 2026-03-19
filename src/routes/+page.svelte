@@ -125,15 +125,16 @@
 <main class="container">
   
   <h1><img src="icon.svg" alt="Lens over Tux" width="64px">sysfind.app</h1>
-  <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
-  <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported}></p>
-  <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret}></p>
-  {#if !hasInteret}
-    <p class="connectionFailed">Connection to Server failed!</p>
-  {/if}
-  <div>
+  <div class="searchContainer">
+    <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
+    <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported} id="switchSupported"><label for="switchSupported"></label></p>
+    <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret}> {#if !hasInteret}<span class="connectionFailed">Connection to Server failed! Can only use local files.</span>{/if}</p>
+  </div>
+  <div class="osContainer">
     {#each data as os (os.id)}
-      <OsListItem os={os} className={!isVisibleId(os.id) ? "invisible" : ""} useLocal={useLocalDataSource} />
+    <div class={!isVisibleId(os.id) ? "invisible" : "osItem"}>
+      <OsListItem os={os} className={!isVisibleId(os.id) ? "invisible" : ""} useLocal={useLocalDataSource}/>
+    </div>
     {:else}
       <p>Nothing was found...</p>
     {/each}
@@ -145,8 +146,26 @@
 </main> 
 
 <style>
+  .searchContainer {
+    display: flex;
+    flex-direction: column;
+    max-width: 35%;
+  }
   .connectionFailed {
     color: red;
     font-weight: bolder;
+  }
+  .osContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .invisible {
+    display: none;
+  }
+  .osItem {
+    width: 45%;
+    margin: 0.5rem;
   }
 </style>

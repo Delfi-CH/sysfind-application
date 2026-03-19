@@ -11,20 +11,30 @@
 
 <main>
     <div class={className}>
-    <h1>{os.name} {os.version} <button onclick={handleDetailViewing}>Show more</button></h1>
-    {#if showDetails}
-       <OsViewer os={os}></OsViewer> 
-    {/if}
-    {#if os.imageDownloadURL} 
-        <Downloader os={os} useLocal={useLocal}></Downloader>
-    {:else if !useLocal}
-        <p>No download available</p>
-    {/if}
+    <div class="container">
+        <h1>{os.name} {os.version} <button class="detailButton" onclick={handleDetailViewing}>Show more</button></h1>
+        {#if showDetails}
+            <OsViewer os={os}></OsViewer> 
+        {/if}
+        {#if os.imageDownloadURL} 
+            <Downloader os={os} useLocal={useLocal}></Downloader>
+        {:else if !useLocal}
+            <p>No download available</p>
+        {/if}
+    </div>
     </div>
 </main>
 
 <style>
     .invisible {
         display: none;
+    }
+    .container {
+        border: 5px solid black;
+        padding: 0.5rem;
+        min-height: 20rem;
+    }
+    .detailButton {
+        height: 2rem;
     }
 </style>

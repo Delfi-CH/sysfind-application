@@ -35,10 +35,13 @@
 </script>
 
 <main>
-    <div>
+    <div class="searchContainer">
+        
         <input type="text" id="searchParam" bind:value={searchParam} placeholder="Type Operating System name"> 
-        <button onclick={handleSearch}>Search</button>
-        <button onclick={handleReset}>Reset</button>
+        <div class="buttonContainer">
+            <button onclick={handleSearch} class="buttonItem">Search</button>
+            <button onclick={handleReset} class="buttonItem">Reset</button>
+        </div>
         <label for="family">Operating System Family</label>
         <select name="family" id="family" bind:value={selectedFamily}>
             <option value="all" selected="selected">All</option>
@@ -57,4 +60,16 @@
 </main>
 
 <style>
+    .searchContainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .buttonContainer {
+        display: flex;
+        flex-direction: row;
+    }
+    .buttonItem {
+        width: 50%;
+    }
 </style>

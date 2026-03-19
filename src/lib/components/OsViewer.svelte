@@ -15,7 +15,6 @@
 </script>
 
 <main>
-    <h1>{os.name}</h1>
     <ul>
         <li>Version: {os.version}</li>
         <li>Family: {os.family}</li>

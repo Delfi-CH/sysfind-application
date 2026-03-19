@@ -156,17 +156,18 @@
                 <div class="barContainer">
                     <span class="bar" style="width: {downloadPercentage.toFixed(2)}%"></span>
                 </div>
-                <span class="barProgress"> {downloadSpeed.toFixed(2)} Mbp/s {downloadPercentage.toFixed(2)}% {(downloadProgressObject.downloaded / 1000000).toFixed(2)} MB / {(downloadProgressObject.total / 1000000).toFixed(2)} MB</span>
+                <span class="barProgress">Speed: {downloadSpeed.toFixed(2)} Mbp/s</span>
+                <span class="barProgress">Progress: {downloadPercentage.toFixed(2)}% {(downloadProgressObject.downloaded / 1000000).toFixed(2)} MB / {(downloadProgressObject.total / 1000000).toFixed(2)} MB</span>
             </div>
             {/if}
         </div>
-        <p>Status: {downloadProgressStatus}</p>
-        <button onclick={async ()=> await revealFile()}>Show in  {hostOs === "windows" ? "Explorer": "File Browser"}</button>
+        <p class="barProgress">Status: {downloadProgressStatus}</p>
+        <button class="openExplorerButton" onclick={async ()=> await revealFile()}>Show in  {hostOs === "windows" ? "Explorer": "File Browser"}</button>
     {:else}
         {#if os.exists === false}
             <p class="imageNotFoundLocally">Image "{filename}" not found locally!</p>
         {/if}
-        <button onclick={async ()=> await revealFile()}>Show in {hostOs === "windows" ? "Explorer": "File Browser"}</button>
+        <button  class="openExplorerButton" onclick={async ()=> await revealFile()}>Show in {hostOs === "windows" ? "Explorer": "File Browser"}</button>
     {/if}
 </main>
 
@@ -184,7 +185,6 @@
         width: fit-content;
         border-radius: 2rem;
         background-color: blue;
-        
     }
 
     .buttonItem {
@@ -210,17 +210,14 @@
     }
     .barContainerContainer {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         margin-top: 0.5rem;
-        text-align: center;
     }
     .barContainer {
         display: flex;
-        width: 30%;
         height: 2rem;
         border: 5px solid blue;
         background-color: #eee;
-        margin-right: 0.5rem;
         border-radius: 2rem;
     }
     .bar {
@@ -230,12 +227,35 @@
     }
 
     .barProgress {
-        text-align: center;
-        font-size: 130%;
+        padding-left: 1rem;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin: 0;
     }
 
     .imageNotFoundLocally {
         color: red;
         font-weight: bolder;
+    }
+    
+    .openExplorerButton {
+        margin-left: 0rem;
+        display: inline;
+        border: none;
+        background-color: #FEC823;
+        padding: 0.7rem;
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
+        border: 5px solid #FCA401;
+        border-radius: 2rem;
+        font-size: 100%;
+        font-style: normal;
+    }
+
+    .openExplorerButton:hover {
+        background-color: #fec723c0;
+        border: 5px solid #FCA401c0;
+        border-radius: 2rem;
+        cursor: pointer;
     }
 </style>
