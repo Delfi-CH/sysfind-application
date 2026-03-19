@@ -124,7 +124,7 @@
 </script>
 
 <main class="container">
-  <Navbar></Navbar>
+  <h1>sysfind.app</h1>
   <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
   <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported}></p>
   <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret}></p>
