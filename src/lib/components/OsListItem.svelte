@@ -12,14 +12,17 @@
 <main>
     <div class={className}>
     <div class="container">
-        <h1>{os.name} {os.version} <button class="detailButton" onclick={handleDetailViewing}>Show more</button></h1>
+        <div class="osListItemTitle">
+            <h1>{os.name} {os.version}</h1>
+            <button class="detailButton" onclick={handleDetailViewing}>{showDetails ? "↑ Show less" : "↓ Show more"}</button>
+        </div>
         {#if showDetails}
             <OsViewer os={os}></OsViewer> 
         {/if}
         {#if os.imageDownloadURL} 
             <Downloader os={os} useLocal={useLocal}></Downloader>
         {:else if !useLocal}
-            <p>No download available</p>
+            <p class="noDownloadText">No download available</p>
         {/if}
     </div>
     </div>
@@ -35,6 +38,34 @@
         min-height: 20rem;
     }
     .detailButton {
-        height: 2rem;
+        height: fit-content;
+        padding: 0.5rem;  
+        font-size: 100%;
+        color: white;
+        background-color: #0042FF;
+        border: 5px solid blue;
+        border-radius: 2rem;
+    }
+
+    .detailButton:hover {
+        background-color: rgba(0, 132, 255);
+        cursor: pointer;
+    }
+    .osListItemTitle {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        height: 5rem;
+        align-items: center;
+    }
+
+    .noDownloadText {
+	    border: 5px solid rgb(102, 101, 101);
+        border-radius: 2rem;
+	    padding: 0.4rem;
+        color: white;
+        background-color: gray;
+        cursor: not-allowed;
+        width: fit-content;
     }
 </style>

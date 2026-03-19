@@ -167,7 +167,7 @@
         {#if os.exists === false}
             <p class="imageNotFoundLocally">Image "{filename}" not found locally!</p>
         {/if}
-        <button  class="openExplorerButton" onclick={async ()=> await revealFile()}>Show in {hostOs === "windows" ? "Explorer": "File Browser"}</button>
+        <button class="openExplorerButton" onclick={async ()=> await revealFile()}>Show in {hostOs === "windows" ? "Explorer": "File Browser"}</button>
     {/if}
 </main>
 
@@ -223,7 +223,6 @@
     .bar {
         background-color: blue;
         border-radius: 2rem;
-
     }
 
     .barProgress {

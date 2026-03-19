@@ -125,7 +125,7 @@
 <main class="container">
   
   <h1><img src="icon.svg" alt="Lens over Tux" width="64px">sysfind.app</h1>
-  <div class="searchContainer">
+  <div style="display: flex; flex-direction: column; max-width: 35%;">
     <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
     <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported} id="switchSupported"><label for="switchSupported"></label></p>
     <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret}> {#if !hasInteret}<span class="connectionFailed">Connection to Server failed! Can only use local files.</span>{/if}</p>
@@ -146,11 +146,6 @@
 </main> 
 
 <style>
-  .searchContainer {
-    display: flex;
-    flex-direction: column;
-    max-width: 35%;
-  }
   .connectionFailed {
     color: red;
     font-weight: bolder;
@@ -165,7 +160,7 @@
     display: none;
   }
   .osItem {
-    width: 45%;
+    width: 48%;
     margin: 0.5rem;
   }
 </style>
