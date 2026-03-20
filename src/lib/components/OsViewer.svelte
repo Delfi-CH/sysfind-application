@@ -2,6 +2,7 @@
 // @ts-nocheck
     import { onMount } from "svelte";
     import Downloader from "./Downloader.svelte";
+    import { slide } from "svelte/transition";
 
     let {os} = $props()
 
@@ -15,7 +16,7 @@
 </script>
 
 <main>
-    <ul class="osVierwerList">
+    <ul class="osVierwerList" transition:slide>
         <li class="osVierwerListItem osVierwerBackgroundBlue">Version: {os.version}</li>
         <li class="osVierwerListItem osVierwerBackgroundWhite">Family: {os.family}</li>
         <li class="osVierwerListItem osVierwerBackgroundBlue">Website: <a href={os.homepage} target="_blank">{os.homepage}</a></li>
