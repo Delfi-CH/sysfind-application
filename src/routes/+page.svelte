@@ -122,13 +122,13 @@
 
 </script>
 
-<main class="container">
+<main>
   
-  <h1><img src="icon.svg" alt="Lens over Tux" width="64px">sysfind.app</h1>
+  <h1 style="color: white;"><img src="icon.svg" alt="Lens over Tux" width="64px">sysfind.app</h1>
   <div class="searchContainer">
     <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
     <span>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported} id="switchSupported"><label for="switchSupported"></label></span>
-    <span>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret}> {#if !hasInteret}<span class="connectionFailed">Connection to Server failed! Can only use local files.</span>{/if}</span>
+    <span>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret} class="useLocalFilesCheckbox"> {#if !hasInteret}<span class="connectionFailed">Connection to Server failed! Can only use local files.</span>{/if}</span>
   </div>
   <div class="osContainer">
     {#each data as os (os.id)}
@@ -172,5 +172,21 @@
   .osItem {
     width: 48%;
     margin: 0.5rem;
+  }
+
+  .useLocalFilesCheckbox {
+    cursor: pointer;
+  }
+
+  .useLocalFilesCheckbox:disabled {
+    cursor: not-allowed;
+  }
+  .useLocalFilesCheckbox:disabled:checked {
+    cursor: not-allowed;
+    accent-color: grey;
+  }
+
+  :root {
+    background-color: #35393ea4;
   }
 </style>
