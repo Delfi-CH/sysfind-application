@@ -23,7 +23,7 @@
         <li class="osVierwerListItem osVierwerBackgroundWhite">Supported: {os.isSupported ? "Yes" : "No"}</li>
         <li class="osVierwerListItem osVierwerBackgroundBlue">Architectures: {mapArchitectures(os.architectures)}</li>
     </ul>
-    <p>{os.description}</p>
+    <p transition:slide >{os.description}</p>
 </main>
 
 <style>
