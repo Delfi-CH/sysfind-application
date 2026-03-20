@@ -38,6 +38,8 @@
 
     let downloadSpeed = $derived(((downloadProgressObject.downloaded - oldDownloadProgressObject.downloaded) * 8) / 1000000)
 
+    let eta = $derived((downloadProgressObject.total / 1000000) / ((downloadProgressObject.downloaded - oldDownloadProgressObject.downloaded) / 1000000))
+
     let showProgressbar = $state(true)
 
     let downloadPath = $state("")
@@ -96,7 +98,6 @@
                 onProgress: (data) => {
                     oldDownloadProgressObject = $state.snapshot(downloadProgressObject)
                     downloadProgressObject = data
-                    downloadSpeed
                 },
                 onFinished: async () => {
                     downloadProgressStatus = "Download finished"
@@ -170,8 +171,12 @@
                 <div class="barContainer">
                     <span class="bar" style="width: {downloadPercentage.toFixed(2)}%"></span>
                 </div>
-                <span class="barProgress">Speed: {downloadSpeed.toFixed(2)} Mbp/s</span>
-                <span class="barProgress">Progress: {downloadPercentage.toFixed(2)}% {(downloadProgressObject.downloaded / 1000000).toFixed(2)} MB / {(downloadProgressObject.total / 1000000).toFixed(2)} MB</span>
+                {#if downloadProgressObject.id !== "-1"}
+                    <span class="barProgress">Speed: {downloadSpeed.toFixed(2)} Mbp/s</span>
+                    <span class="barProgress">{eta !== Infinity ? (eta / 60).toFixed(0) : 0} Minutes left</span>
+                    <span class="barProgress">Progress: {downloadPercentage.toFixed(2)}%</span>
+                    <span class="barProgress">{(downloadProgressObject.downloaded / 1000000).toFixed(2)} MB / {(downloadProgressObject.total / 1000000).toFixed(2)} MB</span>
+                {/if}
             </div>
             {/if}
         </div>
