@@ -18,7 +18,7 @@
     <ul class="osVierwerList">
         <li class="osVierwerListItem osVierwerBackgroundBlue">Version: {os.version}</li>
         <li class="osVierwerListItem osVierwerBackgroundWhite">Family: {os.family}</li>
-        <li class="osVierwerListItem osVierwerBackgroundBlue">Webpage: <a href={os.homepage} target="_blank">{os.homepage}</a></li>
+        <li class="osVierwerListItem osVierwerBackgroundBlue">Website: <a href={os.homepage} target="_blank">{os.homepage}</a></li>
         <li class="osVierwerListItem osVierwerBackgroundWhite">Supported: {os.isSupported ? "Yes" : "No"}</li>
         <li class="osVierwerListItem osVierwerBackgroundBlue">Architectures: {mapArchitectures(os.architectures)}</li>
     </ul>

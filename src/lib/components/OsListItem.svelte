@@ -13,7 +13,7 @@
     <div class={className}>
     <div class="container">
         <div class="osListItemTitle">
-            <h1>{os.name} {os.version}</h1>
+            <h1 style="width: 70%">{os.name} {os.version}</h1>
             <button class="detailButton" onclick={handleDetailViewing}>{showDetails ? "↑ Show less" : "↓ Show more"}</button>
         </div>
         {#if showDetails}

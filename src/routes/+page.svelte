@@ -125,10 +125,10 @@
 <main class="container">
   
   <h1><img src="icon.svg" alt="Lens over Tux" width="64px">sysfind.app</h1>
-  <div style="display: flex; flex-direction: column; max-width: 35%;">
+  <div class="searchContainer">
     <FuzzySearch osNames={osNames} onSearch={handleSearch} onReset={(()=> resetSearch())}></FuzzySearch>
-    <p>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported} id="switchSupported"><label for="switchSupported"></label></p>
-    <p>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret}> {#if !hasInteret}<span class="connectionFailed">Connection to Server failed! Can only use local files.</span>{/if}</p>
+    <span>Show outdated / unsupported: <input type="checkbox" bind:checked={showUnsupported} id="switchSupported"><label for="switchSupported"></label></span>
+    <span>Use local files: <input type="checkbox" bind:checked={useLocalDataSource} onchange={async ()=> await handleSourceChange()} disabled={!hasInteret}> {#if !hasInteret}<span class="connectionFailed">Connection to Server failed! Can only use local files.</span>{/if}</span>
   </div>
   <div class="osContainer">
     {#each data as os (os.id)}
@@ -156,6 +156,16 @@
     flex-wrap: wrap;
   }
 
+  .searchContainer {
+    display: flex;
+    flex-direction: column;
+    max-width: 35%;
+    margin-left: 0.7rem;
+    padding: 0.7rem;
+    border: 5px solid black;
+    border-radius: 1.5rem;
+    background-color: #E4EEFF;
+  }
   .invisible {
     display: none;
   }
