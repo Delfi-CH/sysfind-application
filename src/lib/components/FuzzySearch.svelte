@@ -82,6 +82,7 @@
         border: none;
         background-color: #0042FF;
         color: white;
+        transition: 0.2s;
     }
 
     .fuzzyButtonItem:hover {

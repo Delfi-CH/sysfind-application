@@ -216,7 +216,7 @@
 	    outline: inherit;
         background-color: rgb(0, 132, 255, 0.5);
         color: white;
-        
+        transition: 0.2s;
     }
 
     .buttonItem:hover {

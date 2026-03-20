@@ -47,6 +47,7 @@
         background-color: #0042FF;
         border: 5px solid blue;
         border-radius: 2rem;
+        transition: 0.2s;
     }
 
     .detailButton:hover {
