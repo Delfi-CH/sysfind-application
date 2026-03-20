@@ -107,6 +107,7 @@
     "shell:default",
     "http:default",
     "dialog:default",
-    "os:default"
+    "os:default",
+    "notification:default"
   ]
 }

@@ -3,12 +3,15 @@
 
     import { onMount, onDestroy } from "svelte";
     import {DownloadManager} from "$lib/download"
+    import { buildOsFilename, checkForLocalOsImage, getSha256SumFromUrl } from "$lib/fetch";
+
     import * as path from '@tauri-apps/api/path';
     import { exists, mkdir, writeTextFile } from '@tauri-apps/plugin-fs';
     import { openPath } from "@tauri-apps/plugin-opener";
     import { platform } from '@tauri-apps/plugin-os';
     import { confirm } from '@tauri-apps/plugin-dialog';
-    import { buildOsFilename, checkForLocalOsImage, getSha256SumFromUrl } from "$lib/fetch";
+    import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
+
     import { objectToIniString } from "@delfi-ch/ini.js";
 
     let {os, useLocal} = $props()
@@ -100,22 +103,24 @@
                     downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
                     downloadId = "-1"
                     isActive = true
-                    console.log(metaPath)
                     const obj = {...os , architectures: os.architectures.map(arch => arch.name).join(", "), exists: true}
                     await writeTextFile(metaPath, objectToIniString(obj))
+                    await sendDownloadNotification("Download finished!", `Finished downloading ${os.name + " " + os.version} to ${downloadPath}.`)
                 },
-                onCancelled: () => {
+                onCancelled: async () => {
                     downloadProgressStatus = "Download canceled"
                     downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
                     oldDownloadProgressObject = {id: "-1", downloaded: 0, total: 1}
                     downloadId = "-1"
                     isActive = true
+                    await sendDownloadNotification("Download canceled!", `Download of ${os.name + " " + os.version} to ${downloadPath} was canceled.`)
                 },
-                onHashMismatch: (data) => {
+                onHashMismatch: async (data) => {
                     downloadProgressStatus = "Failed to verify download! Expected " + data.expected + ", got " + data.actual
                     downloadProgressObject = {id: "-1", downloaded: 0, total: 1}
                     downloadId = "-1"
                     isActive = true
+                    await sendDownloadNotification("Hash Mismatch!", `Failed to verify sha256 hash for ${os.name + " " + os.version}!`)
                 }
             }
         )
@@ -138,8 +143,17 @@
     async function revealFile() {
         const isoDir = await path.dirname(downloadPath)
         await openPath(isoDir)
-        console.log(isoDir)
-        
+    }
+
+    async function sendDownloadNotification(title, message) {
+        let permissionGranted = await isPermissionGranted();
+        if (!permissionGranted) {
+            const permission = await requestPermission();
+            permissionGranted = permission === 'granted';
+        }
+        if (permissionGranted) {
+            sendNotification({ title: title, body: message });
+        }
     }
 </script>
 
