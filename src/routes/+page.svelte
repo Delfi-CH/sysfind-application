@@ -166,12 +166,41 @@
     border-radius: 1.5rem;
     background-color: #E4EEFF;
   }
+
   .invisible {
     display: none;
   }
   .osItem {
     width: 48%;
     margin: 0.5rem;
+  }
+
+  @media (max-width: 969px) {
+    .osItem {
+      width: 96%;
+    }
+  }
+
+  @media (min-width: 970px) and (max-width: 1699px) {
+    .osItem {
+      width: 48%;
+    }
+  }
+
+  @media (min-width: 1699px) and (max-width: 2199px) {
+    .osItem {
+      width: 32%;
+    }
+  }
+
+  @media (min-width: 2199px) {
+    .osItem {
+      width: 24%;
+    }
+
+    .searchContainer {
+      max-width: 24%;
+    }
   }
 
   .useLocalFilesCheckbox {
