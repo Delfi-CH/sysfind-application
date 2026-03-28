@@ -6,7 +6,7 @@ import { iniStringToObject } from '@delfi-ch/ini.js';
 import * as path from '@tauri-apps/api/path';
 import { mkdir, exists } from '@tauri-apps/plugin-fs';
 
-export const backendURL = "http://localhost:3000/api/sysfind"
+export const backendURL = "https://api-sysfind.delfi.dev/api/sysfind"
 
 export async function getAllOs() {
     const res = await axios.get(backendURL+"/operatingSystem")
@@ -194,9 +194,7 @@ function determinePossibleArchitectureFromName(architecturesArray) {
 
 export async function checkForInternet() {
     try {
-        const res = await fetch(backendURL + "/", {
-            method: "GET"
-        })
+        const res = await axios.get(backendURL)
         return res.status === 200
     } catch {
         return false
