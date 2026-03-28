@@ -1,0 +1,25 @@
+# Maintainer: Delfi-CH <delfi@delfi.dev>
+
+pkgname=sysfind-bin
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Sysfind Tauri application"
+arch=('x86_64')
+url="https://sysfind.app"
+license=('GPL-3.0-or-later')
+
+depends=('cairo' 'desktop-file-utils' 'gdk-pixbuf2' 'glib2' 'gtk3' 'hicolor-icon-theme' 'libsoup' 'pango' 'webkit2gtk-4.1')
+
+provides=('sysfind')
+conflicts=('sysfind' 'sysfind-git' 'sysfind-debug' 'sysfind-git-debug')
+
+source=("https://github.com/Delfi-CH/sysfind-application/releases/latest/download/sysfind-application_${pkgver}_amd64.deb")
+sha256sums=('SKIP')
+
+package() {
+  cd "$srcdir"
+
+  ar x sysfind-application_${pkgver}_amd64.deb
+
+  bsdtar -xf data.tar.* -C "$pkgdir"
+}

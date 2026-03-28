@@ -1,0 +1,71 @@
+# Maintainer: Delfi-CH <delfi@delfi.dev>
+
+pkgname=sysfind-git
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Sysfind Tauri application"
+arch=('x86_64' 'aarch64')
+url="https://sysfind.app"
+license=('GPL-3.0-or-later')
+
+depends=(
+  'cairo'
+  'desktop-file-utils'
+  'gdk-pixbuf2'
+  'glib2'
+  'gtk3'
+  'hicolor-icon-theme'
+  'libsoup'
+  'pango'
+  'webkit2gtk-4.1'
+)
+
+makedepends=(
+  'git'
+  'openssl'
+  'appmenu-gtk-module'
+  'libappindicator-gtk3'
+  'librsvg'
+  'cargo'
+  'npm'
+  'nodejs'
+  'base-devel'
+  'clang'
+  'llvm'
+  'lld'
+  'perl'
+  'pkgconf'
+)
+
+provides=('sysfind')
+conflicts=('sysfind' 'sysfind-bin' 'sysfind-debug' 'sysfind-git-debug')
+
+source=("git+https://github.com/Delfi-CH/sysfind-application.git")
+sha256sums=('SKIP')
+
+prepare() {
+  cd sysfind-application
+  npm install
+}
+
+build() {
+  cd sysfind-application
+
+  export CFLAGS=""
+  export CXXFLAGS=""
+  export LDFLAGS=""
+  export RUSTFLAGS=""
+
+  export CC=gcc
+  export CXX=g++
+
+  export CARGO_PROFILE_RELEASE_LTO=false
+
+  export CARGO_TARGET_DIR="$srcdir/target"
+
+  npm run tauri build -- -b deb
+}
+
+package() {
+  cp -a target/release/bundle/deb/sysfind-application_${pkgver}_*/data/* "${pkgdir}"
+}
